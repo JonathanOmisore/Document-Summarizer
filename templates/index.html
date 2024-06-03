@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Summarizer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Document Summarizer</h1>
+        <form id="summarize-form">
+            <textarea name="document" id="document" rows="10" placeholder="Paste your document here..."></textarea><br>
+            <button type="button" onclick="summarizeDocument()">Summarize</button>
+        </form>
+        <h2>Summary</h2>
+        <p id="summary"></p>
+    </div>
+    <script>
+        async function summarizeDocument() {
+            const document = document.getElementById('document').value;
+            const response = await fetch('/summarize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `document=${encodeURIComponent(document)}`
+            });
+            const data = await response.json();
+            if (response.ok) {
+                document.getElementById('summary').innerText = data.summary;
+            } else {
+                document.getElementById('summary').innerText = data.error;
+            }
+        }
+    </script>
+</body>
+</html>
